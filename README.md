@@ -1,9 +1,9 @@
 # Attention it is very dangerous to work with line voltage! You should know what you do!
 
 # Sauna-controller
-Sauna Controller with esp8266 and [ESPHome](https://esphome.io/) for a integration in [Home Assistant](https://www.home-assistant.io/) 
+Sauna Controller with WT32-ETH01 and [ESPHome](https://esphome.io/) for integration in [Home Assistant](https://www.home-assistant.io/) 
 
-The big advantage you get for about 60€: a sauna controller that is awesome!
+The big advantage you get for about [200€](COST.md): a sauna controller that is awesome!
 
 The sauna controller is build up from scratch. No additional components are needed.
 The integration is done with Home Assistant. The controller itself is built around the awesome [ESPHome](https://esphome.io/).
