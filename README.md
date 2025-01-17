@@ -1,4 +1,6 @@
 # Attention it is very dangerous to work with line voltage! You should know what you do!
+This is a Fork of kilee's [Sauna-controller](https://github.com/killee/Sauna-controller).
+Check out his great work!
 
 # Sauna-controller
 Sauna Controller with WT32-ETH01 and [ESPHome](https://esphome.io/) for integration in [Home Assistant](https://www.home-assistant.io/) 
@@ -87,6 +89,25 @@ With the sensor in the door, the timer will reset if the door is opened. That’
 I can measure different temperatures. It was not easy to build a LED lamp for the sauna and not to overheat the LEDs. With a temperature sensor in the lamp I was able to test it if the heat dissipation is enough. The second it was enough ;-).
 
 I've tried my best to comment the easy yaml config file, so Chat it's easy to understand. It can be a good starting point for your own implementation.
+
+# Hardware
+The controller uses a [WT32-ETH01](https://werner.rothschopf.net/microcontroller/202401_esp32_wt32_eth01_en.htm) as a microcontroller.
+This LAN connected ESP32 Dev-Board is flashed as follows: [link](https://wolf-u.li/flashen-des-wt32-eth01-ein-esp32-mit-lan-wifiwlan/)
+|USB->TTL | WT32-ETH01  |
+|---|---|
+|GND   | GND   |
+|TX   | RX0 (not RXD!)  |
+|RX   | TX0 (not TXD!)  |
+|5V  | 5V |
+    
+    	—>	
+    	—>	
+     	—>	
+    	—>	TX0 
+    5V	—>	5V
+
+Pin Out:
+
 
 # circuit diagram
 This is very easy. Normally it is not needed and the ESPHome yaml file is enough. 
