@@ -1,0 +1,23 @@
+substitutions:
+
+###### CHANGE ME START ######
+
+  device_name: "sauna-controller"
+  friendly_name: "Sauna" 
+  wifi_ssid: !secret WiFi_IoT_SSID
+  wifi_password: !secret WiFi_IoT_password
+  esp_encryption_key: !secret ESP_encryption_key
+  esp_OTA_password: !secret ESP_OTA_password
+  sauna_power: "0.09" #Power of the sauna oven (kw dividet 100)
+  max_power_generic: "1.0" #Max power of the sauna oven
+  
+##### CHANGE ME END #####
+
+
+packages:
+  remote_package:
+    url: https://github.com/darius-ger/Sauna-Controller
+    ref: main
+    files:
+      - sauna_controller.yaml # Core package
+    refresh: 300s

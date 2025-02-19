@@ -12,29 +12,29 @@ esphome:
   platform: ESP32
   board: esp-wrover-kit
 
-# Network Configuration (use either LAN or Wifi)
-ethernet:
-  type: LAN8720
-  mdc_pin: GPIO23
-  mdio_pin: GPIO18
-  clk_mode: GPIO0_IN
-  phy_addr: 1
-  power_pin: GPIO16
-
 # wifi:
-#   ssid: !secret WiFi_IoT_SSID
-#   password: !secret WiFi_IoT_password
+  ssid: $wifi_ssid
+  password: $wifi_password
 
-#   # Enable fallback hotspot (captive portal) in case wifi connection fails
-#   ap:
-#     ssid: "Sauna Fallback Hotspot"
-#     password: "dBw8reQVwswK"
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Sauna Fallback Hotspot"
+    password: "sauna"
 
-# captive_portal:
+captive_portal:
+
+# Network Configuration (use either LAN or Wifi)
+# ethernet:
+#   type: LAN8720
+#   mdc_pin: GPIO23
+#   mdio_pin: GPIO18
+#   clk_mode: GPIO0_IN
+#   phy_addr: 1
+#   power_pin: GPIO16
 
 ota:
   - platform: esphome
-    password: !secret esp_OTA_password
+    password: $esp_OTA_password
 
 # Enable logging
 logger:
@@ -42,7 +42,7 @@ logger:
 # Enable Home Assistant API
 api:
   encryption:
-    key: !secret esp_encryption_key
+    key: $esp_encryption_key
 
 # Web Server
 web_server:
