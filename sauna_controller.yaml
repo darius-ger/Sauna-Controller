@@ -23,6 +23,13 @@ esp32:
 
 # Enable logging
 logger:
+  level: DEBUG
+
+# make log level selectable in HA
+select:
+  - platform: logger
+    name: "Logger select"
+    
 
 # Enable Home Assistant API
 api:
