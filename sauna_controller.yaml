@@ -72,6 +72,20 @@ globals:
 
 #the SSR relays for the sauna oven. They are switchted with a BC847 
 output:
+  output:
+  - platform: template
+    id: sauna_heater_output
+    type: float
+    write_action:
+      - output.set_level:
+          id: sauna_heater_output_L1
+          level: !lambda: return state;
+      - output.set_level:
+          id: sauna_heater_output_L2
+          level: !lambda return state;
+      - output.set_level:
+          id: sauna_heater_output_L3
+          level: !lambda return state;
   - platform: slow_pwm
     pin: GPIO27
     id: sauna_heater_output_L1
