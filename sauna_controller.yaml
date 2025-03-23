@@ -50,7 +50,7 @@ captive_portal:
 #Pinmapping
 #GPIO 27 Sauna oven L1
 #GPIO 32 Sauna oven L2
-#GPIO 33 Sauna oven L
+#GPIO 33 Sauna oven L3
 #GPIO 22 I2C SCL
 #GPIO 21 I2C SDA 
 #GPIO 23 DHT22
@@ -81,7 +81,7 @@ output:
     id: sauna_heater_output_L2
     period: 60s   
   - platform: slow_pwm
-    pin: GPIO32
+    pin: GPIO33
     id: sauna_heater_output_L3
     period: 60s 
 #optional implementation using sigma_delta_output
