@@ -294,47 +294,47 @@ binary_sensor:
 #   #         use_random_color: false
 #   #         fade_out_rate: 120
 
-# #every minute a event is fired, to switch the Sauna off after 90min without opening the door
-# #If the door is open for more than 5min switch off the sauna
-# time:
-#   - platform: sntp
-#     # ...
-#     on_time:
-#       # Every minut
-#       - seconds: 0
-#         minutes: /1
-#         then:
-#           - lambda: |-
-#               if (id(sauna_climate).mode==climate::CLIMATE_MODE_OFF) {
-#                 id(count_global_int)=0;
-#                 id(sauna_ready).publish_state(false);
-#               }else{
-#                 id(count_global_int)++;
-#                 if (!id(door_sensor).state) {
-#                   id(count_global_door_int)=0;
-#                 }else{
-#                   //If the door is open for more than 5min switch off the sauna
-#                   id(count_global_door_int)++;
-#                   if (id(count_global_door_int)>5){
-#                     auto call = id(sauna_climate).make_call();
-#                     call.set_mode("OFF");
-#                     call.perform();
-#                   }
-#                 }
-#                 if (id(sauna_climate).current_temperature > id(sauna_climate).target_temperature){
-#                   //reset the timer after reaching the target temperature
-#                   if (id(sauna_ready).state==false){
-#                     id(count_global_int)=0;
-#                   }
-#                   id(sauna_ready).publish_state(true);
-#                 }
-#               }
-#               if (id(count_global_int) > 90){
-#                 auto call = id(sauna_climate).make_call();
-#                 call.set_mode("OFF");
-#                 call.perform();
-#               }
-# #                
+#every minute a event is fired, to switch the Sauna off after 90min without opening the door
+#If the door is open for more than 5min switch off the sauna
+time:
+  - platform: sntp
+    # ...
+    on_time:
+      # Every minut
+      - seconds: 0
+        minutes: /1
+        then:
+          - lambda: |-
+              if (id(sauna_climate).mode==climate::CLIMATE_MODE_OFF) {
+                id(count_global_int)=0;
+                id(sauna_ready).publish_state(false);
+              }else{
+                id(count_global_int)++;
+                if (!id(door_sensor).state) {
+                  id(count_global_door_int)=0;
+                }else{
+                  //If the door is open for more than 5min switch off the sauna
+                  id(count_global_door_int)++;
+                  if (id(count_global_door_int)>5){
+                    auto call = id(sauna_climate).make_call();
+                    call.set_mode("OFF");
+                    call.perform();
+                  }
+                }
+                if (id(sauna_climate).current_temperature > id(sauna_climate).target_temperature){
+                  //reset the timer after reaching the target temperature
+                  if (id(sauna_ready).state==false){
+                    id(count_global_int)=0;
+                  }
+                  id(sauna_ready).publish_state(true);
+                }
+              }
+              if (id(count_global_int) > 90){
+                auto call = id(sauna_climate).make_call();
+                call.set_mode("OFF");
+                call.perform();
+              }
+#                
 
 climate:
 
