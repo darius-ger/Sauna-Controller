@@ -14,8 +14,8 @@ esphome:
   on_boot:
     then:
       - climate.control:
-        id: sauna_climate
-        mode: 'OFF'
+          id: sauna_climate
+          mode: 'OFF'
   # update OTA password
   #   - lambda: |-
   #       id(my_ota).set_auth_password("New OTA Password");
