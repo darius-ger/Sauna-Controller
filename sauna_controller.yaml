@@ -1,7 +1,7 @@
 substitutions:
   devicename: sauna_controller
   user: Matthias
-  #fullname: Sauna
+  fullname: Sauna
   max_power_generic: "1.0"
   #power of the sauna oven (kw dividet 100)
   power_of_sauna_oven: "0.09"
@@ -53,7 +53,7 @@ captive_portal:
 #GPIO 33 Sauna oven L3
 #GPIO 22 I2C SCL
 #GPIO 21 I2C SDA 
-#GPIO 23 DHT22
+#GPIO 23 DHT22 (cabinet)
 #GPIO 25 Dallas
 #GPIO 4  Door Reed contact 
 #GPIO 5  Fan
@@ -119,8 +119,18 @@ one_wire:
 #   id: bus_a
 
 
-# # Individual sensors
-# sensor:
+# Individual sensors
+sensor:
+  - platform: dht #a sensor in the control cabinet
+    model: dht22    
+    pin: GPIO23
+    update_interval: 60s
+    temperature:
+      name: ${fullname} Steuerung Temperatur
+      id: dht22_temperature
+    humidity:
+      name: ${fullname} Steuerung Luftfeuchte
+      id: dht22_humidity
 #   - platform: dallas
 #     address: 0xD60516A1D5F6FF28 #Sensor on the seeling near by oven
 #     name: ${user} Sauna Temperatur direkt in der Sauna
