@@ -12,9 +12,10 @@ esphome:
   friendly_name: sauna-controller
   
   on_boot:
-    - climate.control:
-      id: sauna_climate
-      mode: OFF
+    then:
+      - climate.control:
+        id: sauna_climate
+        mode: 'OFF'
   # update OTA password
   #   - lambda: |-
   #       id(my_ota).set_auth_password("New OTA Password");
@@ -32,6 +33,7 @@ logger:
 select:
   - platform: logger
     name: "Logger select"
+    entity_category: CONFIG 
 
 
 # Enable Home Assistant API
