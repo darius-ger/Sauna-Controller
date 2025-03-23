@@ -205,37 +205,37 @@ sensor:
 #     lambda: |-
 #       return id(count_global_int); 
 
-#   - platform: pid
-#     climate_id: sauna_climate
-#     name: ${user} Sauna PID Climate Result PROPORTIONAL
-#     type: PROPORTIONAL
-#   - platform: pid
-#     climate_id: sauna_climate
-#     name: ${user} Sauna PID Climate Result INTEGRAL 
-#     type: INTEGRAL 
-#   - platform: pid
-#     climate_id: sauna_climate
-#     name: ${user} Sauna PID Climate Result DERIVATIVE 
-#     type: DERIVATIVE 
-#   - platform: pid
-#     climate_id: sauna_climate
-#     name: ${user} Sauna PID Climate Result HEAT 
-#     id: generic_power
-#     type: HEAT 
+  - platform: pid
+    climate_id: sauna_climate
+    name: ${user} Sauna PID Climate Result PROPORTIONAL
+    type: PROPORTIONAL
+  - platform: pid
+    climate_id: sauna_climate
+    name: ${user} Sauna PID Climate Result INTEGRAL 
+    type: INTEGRAL 
+  - platform: pid
+    climate_id: sauna_climate
+    name: ${user} Sauna PID Climate Result DERIVATIVE 
+    type: DERIVATIVE 
+  - platform: pid
+    climate_id: sauna_climate
+    name: ${user} Sauna PID Climate Result HEAT 
+    id: generic_power
+    type: HEAT 
   
-#   - platform: pid
-#     climate_id: sauna_climate
-#     name: ${user} Sauna current power
-#     type: HEAT
-#     filters:
-#       - multiply: ${power_of_sauna_oven}
-#     unit_of_measurement: 'kW'
-#     id: power_of_sauna
+  - platform: pid
+    climate_id: sauna_climate
+    name: ${user} Sauna current power
+    type: HEAT
+    filters:
+      - multiply: ${power_of_sauna_oven}
+    unit_of_measurement: 'kW'
+    id: power_of_sauna
 
-#   - platform: total_daily_energy
-#     name: ${user} Sauna energy
-#     unit_of_measurement: 'kWh'
-#     power_id: power_of_sauna
+  - platform: total_daily_energy
+    name: ${user} Sauna energy
+    unit_of_measurement: 'kWh'
+    power_id: power_of_sauna
 
   - platform: wifi_signal
     name: ${devicename} WiFi Signal Sensor
@@ -257,13 +257,13 @@ binary_sensor:
           - lambda: |-
               id(count_global_int)=0;
 
-#   - platform: template #switch on if sauna reaches target temperatur
-#     name: ${user} Sauna bereit
-#     device_class: "heat"
-#     id: sauna_ready
+  - platform: template #switch on if sauna reaches target temperatur
+    name: ${user} Sauna bereit
+    device_class: "heat"
+    id: sauna_ready
 
-#   - platform: status
-#     name: ${user} Sauna
+  - platform: status
+    name: ${user} Sauna
 
 # light:
 #   # - platform: neopixelbus #fancy lamp for sauna
@@ -336,23 +336,23 @@ binary_sensor:
 #               }
 # #                
 
-# climate:
+climate:
 
-#   - platform: pid #parameters suitable for my sauna with 7kw oven and about 1.7x1.6x2.2m^3
-#     id: sauna_climate
-#     name: ${user} Sauna Steuerung
-#     sensor: sauna_temp
-#     default_target_temperature: 5°C
-#     #hysteresis: 1 °C
-#     #default_target_temperature_high: 60 °C
-#     heat_output: sauna_heater_output
-#     control_parameters:
-#       kp: 0.17181
-#       ki: 0.00015
-#       kd: 75.09859
+  - platform: pid #parameters suitable for my sauna with 7kw oven and about 1.7x1.6x2.2m^3
+    id: sauna_climate
+    name: ${user} Sauna Steuerung
+    sensor: sauna_temp
+    default_target_temperature: 30°C
+    #hysteresis: 1 °C
+    #default_target_temperature_high: 60 °C
+    heat_output: sauna_heater_output
+    control_parameters:
+      kp: 0.17181
+      ki: 0.00015
+      kd: 75.09859
 
-#     visual:
-#       min_temperature: 10 °C
-#       max_temperature: 100 °C
-#       temperature_step: 1 °C
+    visual:
+      min_temperature: 10 °C
+      max_temperature: 100 °C
+      temperature_step: 1 °C
 
