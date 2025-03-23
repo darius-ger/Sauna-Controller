@@ -10,7 +10,7 @@ esphome:
   name: $devicename
   friendly_name: Sauna
   platform: ESP32
-  board: esp-wrover-kit
+  board: nodemcu-32s2
 
 # wifi:
   ssid: $wifi_ssid
@@ -71,8 +71,21 @@ globals:
 output:
   - platform: slow_pwm
     pin: D0
-    id: sauna_ofen_pwm
+    id: sauna_heater_output
     period: 60s    
+
+#optional implementation using sigma_delta_output
+# output:
+#   - platform: sigma_delta_output
+#     update_interval: 10s
+#     id: sauna_heater_output
+
+  #   # Output to a pin
+  #   pin: GPIOXX
+
+  # - platform: gpio
+  #   pin: GPIOXX
+  #   id: heater_relay
 
 switch:
   - platform: template
@@ -229,33 +242,33 @@ binary_sensor:
     name: ${user} Sauna
 
 light:
-  - platform: neopixelbus #fancy lamp for sauna
-    method: ESP8266_UART1
-    variant: WS2812
-    type: GRB
-    pin: D4
-    num_leds: 133
-    name: ${user} Sauna Licht
-    id: sauna_licht
-    effects:
-      - random:
-      - strobe:
-      - addressable_rainbow:
-      - addressable_twinkle:
-      - addressable_color_wipe:
-      - addressable_scan:
-      - addressable_twinkle:
-          name: Twinkle Effect With Custom Values
-          twinkle_probability: 15%
-          progress_interval: 4ms
-      - addressable_random_twinkle:
-      - addressable_fireworks:
-      - addressable_fireworks:
-          name: Fireworks Effect With Custom Values
-          update_interval: 32ms
-          spark_probability: 40%
-          use_random_color: false
-          fade_out_rate: 120
+  # - platform: neopixelbus #fancy lamp for sauna
+  #   method: ESP8266_UART1
+  #   variant: WS2812
+  #   type: GRB
+  #   pin: D4
+  #   num_leds: 133
+  #   name: ${user} Sauna Licht
+  #   id: sauna_licht
+  #   effects:
+  #     - random:
+  #     - strobe:
+  #     - addressable_rainbow:
+  #     - addressable_twinkle:
+  #     - addressable_color_wipe:
+  #     - addressable_scan:
+  #     - addressable_twinkle:
+  #         name: Twinkle Effect With Custom Values
+  #         twinkle_probability: 15%
+  #         progress_interval: 4ms
+  #     - addressable_random_twinkle:
+  #     - addressable_fireworks:
+  #     - addressable_fireworks:
+  #         name: Fireworks Effect With Custom Values
+  #         update_interval: 32ms
+  #         spark_probability: 40%
+  #         use_random_color: false
+  #         fade_out_rate: 120
 
 #every minute a event is fired, to switch the Sauna off after 90min without opening the door
 #If the door is open for more than 5min switch off the sauna
@@ -308,7 +321,7 @@ climate:
     default_target_temperature: 5°C
     #hysteresis: 1 °C
     #default_target_temperature_high: 60 °C
-    heat_output: sauna_ofen_pwm
+    heat_output: sauna_heater_output
     control_parameters:
       kp: 0.17181
       ki: 0.00015
