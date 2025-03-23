@@ -244,7 +244,7 @@ sensor:
 binary_sensor:
   - platform: gpio #reed contact at the door -> resets a timer not really needed
     pin:
-      number: D6
+      number: GPIO4
       mode: INPUT_PULLUP
       #inverted: True
     name: ${user} Sauna Tür
