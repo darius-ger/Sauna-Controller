@@ -6,8 +6,8 @@ substitutions:
   friendly_name: "Sauna" 
   wifi_ssid: !secret WiFi_IoT_SSID
   wifi_password: !secret WiFi_IoT_password
-  esp_encryption_key: !secret ESP_encryption_key
-  esp_OTA_password: !secret ESP_OTA_password
+  esp_encryption_key: !secret esp_encryption_key
+  esp_OTA_password: !secret esp_OTA_password
   power_of_sauna_oven: "0.09" #Power of the sauna oven (kw dividet 100)
   #max_power_generic: "1.0" #Max power of the sauna oven
   

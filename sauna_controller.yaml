@@ -1,16 +1,12 @@
-substitutions:
-  devicename: sauna_controller
-  user: Matthias
-  friendly_name: Sauna
-  max_power_generic: "1.0"
-  #power of the sauna oven (kw dividet 100)
-  #power_of_sauna_oven: "0.09"
-
 
 esphome:
   name: sauna-controller
   friendly_name: sauna-controller
-  
+  project:
+    name: "darius-ger:sauna-controller"
+    version: "0.1"
+  preferences:
+    flash_write_interval: 600s
   on_boot:
     priority: 200
     then:
