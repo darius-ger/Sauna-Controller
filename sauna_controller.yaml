@@ -1,10 +1,10 @@
 substitutions:
   devicename: sauna_controller
   user: Matthias
-  fullname: Sauna
+  friendly_name: Sauna
   max_power_generic: "1.0"
   #power of the sauna oven (kw dividet 100)
-  power_of_sauna_oven: "0.09"
+  #power_of_sauna_oven: "0.09"
 
 
 esphome:
@@ -12,6 +12,7 @@ esphome:
   friendly_name: sauna-controller
   
   on_boot:
+    priority: 200
     then:
       - climate.control:
           id: sauna_climate
@@ -60,18 +61,21 @@ captive_portal:
 
 
 #Pinmapping
-#GPIO 27 Sauna oven L1
-#GPIO 32 Sauna oven L2
-#GPIO 33 Sauna oven L3
-#GPIO 22 I2C SCL
-#GPIO 21 I2C SDA 
-#GPIO 23 DHT22 (cabinet)
-#GPIO 25 Dallas
-#GPIO 4  Door Reed contact 
-#GPIO 5  Fan
-#GPIO 18 LED lighting (PWM?)
+#GPIO 2   Door Reed contact 
+#GPIO 5   Led Ligthing R
+#GPIO 12  Led Ligthing G
+#GPIO 13  Led Ligthing B
+#GPIO 14  Led Ligthing W
+#GPIO 16  Fan
+#GPIO 27  Sauna oven L1
+#GPIO 32  Sauna oven L2
+#GPIO 33  Sauna oven L3
+#GPIO 21  DHT22 (wall west)
+#GPIO 22  DHT22 (Wall north) 
+#GPIO 23  DHT22 (controll cabinet)
+#GPIO 25  Dallas
 
-
+#global variables
 globals:
   - id: count_global_int
     type: int
@@ -82,7 +86,7 @@ globals:
     restore_value: no
     initial_value: '0'
 
-#the SSR relays for the sauna oven. They are switchted with a BC847 
+#the SSR relays for the sauna oven. 
 output:
   - platform: template
     id: sauna_heater_output
@@ -122,26 +126,22 @@ output:
   #   pin: GPIOXX
   #   id: heater_relay
 
-# switch:
-#   - platform: template
-#     name:  ${user} Sauna PID Climate Autotune
-#     turn_on_action:
-#       - climate.pid.autotune: sauna_climate    
+switch:
+  - platform: template
+    name:  ${friendly_name} PID Autotune
+    turn_on_action:
+      - climate.pid.autotune: sauna_climate
+  -platform: gpio
+    name: ${friendly_name} Lüftung
+    id: sauna_fan
+    icon: "mdi:fan"
+    pin: GPIO16
+      
+     
 
 one_wire:
   - platform: gpio
     pin: GPIO25
-
-# dallas_temp:
-#   - platform: GPIO
-#     pin: GPIO25
-#     update_interval: 10s
-
-# i2c:
-#   sda: D2
-#   scl: D1
-#   scan: True
-#   id: bus_a
 
 
 # Individual sensors
@@ -151,106 +151,72 @@ sensor:
     pin: GPIO23
     update_interval: 60s
     temperature:
-      name: ${fullname} Steuerung Temperatur
-      id: dht22_temperature
+      name: ${friendly_name} Steuerung Temperatur
+      id: dht22_temperature_control_cabinet
     humidity:
-      name: ${fullname} Steuerung Luftfeuchte
-      id: dht22_humidity
+      name: ${friendly_name} Steuerung Luftfeuchte
+      id: dht22_humidity_control_cabinet
+  - platform: dht #sensor in the wall north
+    model: dht22    
+    pin: GPIO22
+    update_interval: 60s
+    temperature:
+      name: ${friendly_name} Wand Nord Temperatur
+      id: dht22_temperature_wall_north
+    humidity:
+      name: ${friendly_name} Wand Nord Luftfeuchte
+      id: dht22_humidity_wall_north
+  - platform: template
+      name: Tau Punkt ${friendly_name} Zwischenwand Nord
+      id: dew_point_wall_north
+      lambda: return (243.5*(log(id(dht22_humidity_wall_north).state/100)+((17.67*id(dht22_temperature_wall_north).state)/(243.5+id(dht22_temperature_wall_north).state)))/(17.67-log(id(dht22_humidity_wall_north).state/100)-((17.67*id(dht22_temperature_wall_north).state)/(243.5+id(dht22_temperature_wall_north).state))));
+      unit_of_measurement: °C
+      icon: 'mdi:thermometer-alert'
+      update_interval: 60s
+  - platform: dht #sensor in the wall west
+    model: dht22    
+    pin: GPIO21
+    update_interval: 60s
+    temperature:
+      name: ${friendly_name} Wand West Temperatur
+      id: dht22_temperature_wall_west
+    humidity:
+      name: ${friendly_name} Wand West Luftfeuchte
+      id: dht22_humidity_wall_west
   - platform: dallas_temp
-    address: 0x5391f6510a646128 #Sensor on the ceeling near by oven
-    name: ${fullname} Temperatur in der Sauna
+    address: 0x5391f6510a646128 #sensor on the ceeling near the oven
+    name: ${friendly_name} Temperatur 
     id: sauna_temp
 #   - platform: dallas
-#     address: 0x11012042F8B5E128 #Sensor in the Sauna lamp 
-#     name: ${user} Sauna Temperatur in Sauna Lampe
-#   - platform: dallas
-#     address: 0x8D0316A1D0C4FF28 #in the electronic at the SSR Relais
-#     name: ${user} Sauna Temperatur in Sauna Steuerung
-#   - platform: dallas
-#     address: 0x07012042F262F228 #at a bench
-#     name: ${user} Sauna Temperatur an der Bank
-
-#   - platform: bme280 #a sensor in the room of the Sauna
-#     temperature:
-#       name: ${user} Sauna Zimmer Temperatur
-#       oversampling: 16x
-#       id: bme280_temperature
-#     pressure:
-#       name: ${user} Sauna Zimmer Luftdruck
-#       id: bme280_pressure
-#     humidity:
-#       name: ${user} Sauna Zimmer Luftfeuchte
-#       id: bme280_humidity
-#     address: 0x76
-#     update_interval: 60s
-#   - platform: template
-#     name: ${user} Sauna Zimmer Berechnete Höhe
-#     lambda: |-
-#       const float STANDARD_SEA_LEVEL_PRESSURE = 1013.25; //in hPa, see note
-#       return ((id(bme280_temperature).state + 273.15) / 0.0065) *
-#         (powf((STANDARD_SEA_LEVEL_PRESSURE / id(bme280_pressure).state), 0.190234) - 1); // in meter
-#     update_interval: 60s
-#     icon: 'mdi:signal'
-#     unit_of_measurement: 'm'
-#   - platform: template
-#     name: ${user} Sauna Zimmer Absolute Humidity
-#     lambda: |-
-#       const float mw = 18.01534;    // molar mass of water g/mol
-#       const float r = 8.31447215;   // Universal gas constant J/mol/K
-#       return (6.112 * powf(2.718281828, (17.67 * id(bme280_temperature).state) /
-#         (id(bme280_temperature).state + 243.5)) * id(bme280_humidity).state * mw) /
-#         ((273.15 + id(bme280_temperature).state) * r); // in grams/m^3
-#     accuracy_decimals: 2
-#     update_interval: 60s
-#     icon: 'mdi:water'
-#     unit_of_measurement: 'g/m³'
-#   - platform: template
-#     name: ${user} Sauna Zimmer Tau Punkt
-#     lambda: return (243.5*(log(id(bme280_humidity).state/100)+((17.67*id(bme280_temperature).state)/(243.5+id(bme280_temperature).state)))/(17.67-log(id(bme280_humidity).state/100)-((17.67*id(bme280_temperature).state)/(243.5+id(bme280_temperature).state))));
-#     unit_of_measurement: °C
-#     icon: 'mdi:thermometer-alert'
-#   - platform: dht #a sensor in the gap beetween the sauna wall and the wall of the room
-#     model: dht22    
-#     pin: D5
-#     temperature:
-#       name: ${user} Sauna Zwischenwand Temperatur
-#       id: dht22_temperature
-#     humidity:
-#       name: ${user} Sauna Zwischenwand Luftfeuchte
-#       id: dht22_humidity
-#   - platform: template
-#     name: ${user} Sauna Zwischenwand Tau Punkt
-#     lambda: return (243.5*(log(id(dht22_humidity).state/100)+((17.67*id(dht22_temperature).state)/(243.5+id(dht22_temperature).state)))/(17.67-log(id(dht22_humidity).state/100)-((17.67*id(dht22_temperature).state)/(243.5+id(dht22_temperature).state))));
-#     unit_of_measurement: °C
-#     icon: 'mdi:thermometer-alert'
-#     update_interval: 60s
-#   - platform: template #gives the counter without a change back to HA (for debugging or so)
-#     name: ${user} Sauna Counter
-#     unit_of_measurement: 'min'
-#     lambda: |-
-#       return id(count_global_int); 
+#     address: 0x07012042F262F228 #sensor below a bench
+#     name: ${friendly_name} Temperatur unter der Bank
+  - platform: template #gives the counter without a change back to HA (for debugging or so)
+    name: ${user} Sauna Counter
+    #unit_of_measurement: 'min'
+    lambda: |-
+      return id(count_global_int); 
 
   - platform: pid
     climate_id: sauna_climate
-    name: ${user} Sauna PID Climate Result PROPORTIONAL
+    name: ${friendly_name} PID Climate Result PROPORTIONAL
     type: PROPORTIONAL
   - platform: pid
     climate_id: sauna_climate
-    name: ${user} Sauna PID Climate Result INTEGRAL 
+    name: ${friendly_name} PID Climate Result INTEGRAL 
     type: INTEGRAL 
   - platform: pid
     climate_id: sauna_climate
-    name: ${user} Sauna PID Climate Result DERIVATIVE 
+    name: ${friendly_name} PID Climate Result DERIVATIVE 
     type: DERIVATIVE 
   - platform: pid
     climate_id: sauna_climate
-    name: ${user} Sauna PID Climate Result HEAT 
+    name: ${friendly_name} PID Climate Result HEAT 
     id: generic_power
     type: HEAT 
   
   - platform: pid
     climate_id: sauna_climate
-    name: ${user} Sauna current power
+    name: ${friendly_name} aktuelle Leistung
     type: HEAT
     filters:
       - multiply: ${power_of_sauna_oven}
@@ -258,7 +224,7 @@ sensor:
     id: power_of_sauna
 
   - platform: total_daily_energy
-    name: ${user} Sauna energy
+    name: ${friendly_name} Stromverbrauch täglich
     unit_of_measurement: 'kWh'
     power_id: power_of_sauna
 
@@ -272,7 +238,7 @@ binary_sensor:
       number: GPIO4
       mode: INPUT_PULLUP
       #inverted: True
-    name: ${user} Sauna Tür
+    name: ${friendly_name} Tür
     device_class: "door"
     id: door_sensor
     filters:
@@ -283,12 +249,12 @@ binary_sensor:
               id(count_global_int)=0;
 
   - platform: template #switch on if sauna reaches target temperatur
-    name: ${user} Sauna bereit
+    name: ${friendly_name} bereit
     device_class: "heat"
     id: sauna_ready
 
   - platform: status
-    name: ${user} Sauna
+    name: ${friendly_name} Status
 
 # light:
 #   # - platform: neopixelbus #fancy lamp for sauna
@@ -325,7 +291,7 @@ time:
   - platform: sntp
     # ...
     on_time:
-      # Every minut
+      # Every minute
       - seconds: 0
         minutes: /1
         then:
@@ -362,10 +328,9 @@ time:
 #                
 
 climate:
-
   - platform: pid #parameters suitable for my sauna with 7kw oven and about 1.7x1.6x2.2m^3
     id: sauna_climate
-    name: ${user} Sauna Steuerung
+    name: ${friendly_name} Steuerung
     sensor: sauna_temp
     default_target_temperature: 30°C
     #hysteresis: 1 °C
