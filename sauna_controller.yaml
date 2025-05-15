@@ -2,13 +2,13 @@ substitutions:
   ##############################
   ## Change only in your      ##
   ## local yaml substitutions ##
-  device_name: $device_name
-  friendly_name: $friendly_name
-  wifi_ssid: $wifi_ssid
-  wifi_password: $wifi_password
-  esp_encryption_key: $esp_encryption_key
-  esp_OTA_password: $esp_OTA_password
-  power_of_sauna_oven: $power_of_sauna_oven
+  device_name: ${device_name}
+  friendly_name: ${friendly_name}
+  wifi_ssid: ${wifi_ssid}
+  wifi_password: ${wifi_password}
+  esp_encryption_key: ${esp_encryption_key}
+  esp_OTA_password: ${esp_OTA_password}
+  power_of_sauna_oven: ${power_of_sauna_oven}
   ##############################
 
 
