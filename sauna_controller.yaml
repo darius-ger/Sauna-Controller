@@ -100,14 +100,20 @@ output:
   - platform: slow_pwm
     pin: GPIO27
     id: sauna_heater_output_L1
+    restore_mode: ALWAYS_OFF
+    entity_category: diagnostic
     period: 60s    
   - platform: slow_pwm
     pin: GPIO32
     id: sauna_heater_output_L2
+    restore_mode: ALWAYS_OFF
+    entity_category: diagnostic
     period: 60s   
   - platform: slow_pwm
     pin: GPIO33
     id: sauna_heater_output_L3
+    restore_mode: ALWAYS_OFF
+    entity_category: diagnostic
     period: 60s 
 #optional implementation using sigma_delta_output
 # output:
@@ -127,7 +133,7 @@ switch:
     name:  ${friendly_name} PID Autotune
     turn_on_action:
       - climate.pid.autotune: sauna_climate
-  -platform: gpio
+  - platform: gpio
     name: ${friendly_name} Lüftung
     id: sauna_fan
     icon: "mdi:fan"
